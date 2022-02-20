@@ -1,0 +1,6 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  /* body -> selector, font-family -> property, Arial -> value */
+  /* not sequential, but what comes later is more important */
+  font-size: 100%;
+}
