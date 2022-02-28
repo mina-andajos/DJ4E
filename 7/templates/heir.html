@@ -1,0 +1,33 @@
+{% extends "./base.html"%} {% block content %}
+
+<p>{{ place_holder }} {{place_holder|safe}}</p>
+
+{% comment %} everything is escaped between curls unless you specify it's safe
+{% endcomment %}
+<p>
+  {% url 'cat-detail' cat.id %}
+  <br />
+  {% author.get_absolute_url %}
+</p>
+
+<p>
+  {% if zap>100 %}do smth{%elif zap>199 %}smth else{% else %}last shit{% endif
+  %}
+</p>
+
+<ul>
+  {% for fruit in fruits %}
+  <li>{{x}}</li>
+  {% endfor %}
+
+  <br />
+
+  {% if nuts is not None %}
+  <p>Number of nuts: {{nuts|length}}</p>
+  {% else %}
+  <p>No nuts 2oho2.</p>
+  {% endif %}
+</ul>
+
+<p>You've got like {{outer.inner}} zaps bro</p>
+{% endblock content %}
