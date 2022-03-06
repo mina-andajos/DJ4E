@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formz</title>
+  </head>
+
+  <body>
+    <form
+      action="html to redirect to after submitting"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <!-- After all inputs inside of the form are in the post request -->
+
+      <div>
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" required />
+      </div>
+
+      <div>
+        <label for="email">E-mail</label>
+        <input type="email" name="email" id="email" required />
+      </div>
+
+      <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required />
+      </div>
+
+      <div>
+        <label for="age">Age</label>
+        <input type="number" name="age" id="age" min="1" max="200" step="4" />
+      </div>
+
+      <div>
+        <label for="birthDate">Birth Date</label>
+        <input
+          type="date"
+          name="birthDate"
+          id="birthDate"
+          min="2021-05-06"
+          max="2022-03-05"
+        />
+      </div>
+
+      <div>
+        <p>Favorite Food</p>
+
+        <div>
+          <label for="apple">Apple</label>
+          <input type="checkbox" name="apple" id="apple" class="item1" />
+        </div>
+
+        <div>
+          <label for="banana">Banana</label>
+          <input type="checkbox" name="banana" id="banana" class="item2" />
+        </div>
+      </div>
+
+      <div>
+        <p>Gender</p>
+
+        <div>
+          <label for="Male">Male</label>
+          <input type="radio" name="Gender" value="male" id="Male" />
+        </div>
+
+        <div>
+          <label for="Female">Female</label>
+          <input type="radio" name="Gender" value="female" id="Female" />
+        </div>
+
+        <div>
+          <label for="Agender">Agender</label>
+          <input type="radio" name="Gender" value="agender" id="Agender" />
+        </div>
+      </div>
+
+      <div>
+        <label for="bio">Bio</label>
+        <textarea name="bio" id="bio" cols="30" rows="10"></textarea>
+      </div>
+
+      <br />
+
+      <div><input type="hidden" name="hidden" value="hi" /></div>
+
+      <div>
+        <label for="telephone">Phone Number</label>
+        <input type="tel" name="telephone" id="telephone" />
+      </div>
+
+      <div>
+        <label for="personalSite">Personal Site</label>
+        <input type="url" name="personalSite" id="personalSite" />
+      </div>
+
+      <div>
+        <label for="favoriteColor">Favorite Color</label>
+        <input type="color" name="favoriteColor" id="favoriteColor" />
+      </div>
+
+      <br />
+
+      <div>
+        <button type="submit">submit</button>
+        <button type="reset">reset</button>
+      </div>
+
+      <div></div>
+    </form>
+  </body>
+</html>
