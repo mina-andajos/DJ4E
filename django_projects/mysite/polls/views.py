@@ -1,9 +1,10 @@
 # Create your views here.
-from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.template import loader
+from django.db.models import F
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
-from .models import Question
+from .models import Choice, Question
 
 
 def index(request: HttpRequest):
@@ -18,22 +19,51 @@ def index(request: HttpRequest):
 def detail(request: HttpRequest, question_id: str):
     question = get_object_or_404(Question, pk=question_id)
 
-    #!Equivalent of:
+    # !Equivalent of:
     # try:
     #     question = Question.objects.get(pk=question_id)
     # except Question.DoesNotExist:
     #     raise Http404("Question does not exist")
-    #!There's also get_list_or_404() that work as filter() and returns 404 if list is empty
+    # !There's also get_list_or_404() that work as filter()
+    # !and returns 404 if list is empty
 
     return render(request, "polls/detail.html", {"question": question})
 
 
-def results(request: HttpRequest, question_id: str):
-    return HttpResponse(f"You're looking at the results of question {question_id}.")
-
-
 def vote(request: HttpRequest, question_id: str):
-    return HttpResponse(f"You're voting on question {question_id}.")
+    question = get_object_or_404(Question, pk=question_id)
 
-def owner(request:HttpRequest):
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST["choice"])
+    except (KeyError, Choice.DoesNotExist):  # ? Incase no choice is submitted
+        # ? Redisplay the question voting form.
+        return render(
+            request=request,
+            template_name="polls/detail.html",
+            context={
+                "question": question,
+                "error_message": "You didn't select a choice.",
+            },
+        )
+
+    else:  # ? I selected a choice
+        selected_choice.votes = F("votes") + 1
+        selected_choice.save()
+        # ! ALWAYS RETRUN HttpResponseRedirect after a successful post
+        # ! because of POST refresh cycle
+
+    return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
+
+
+def results(request: HttpRequest, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+
+    return render(
+        request=request,
+        template_name="polls/results.html",
+        context={"question": question},
+    )
+
+
+def owner(request: HttpRequest):
     return HttpResponse("Hello, world. 8fe69eac is the polls index.")
