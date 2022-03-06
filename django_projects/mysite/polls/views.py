@@ -3,10 +3,16 @@ from django.db.models import F
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.views import generic
 
 from .models import Choice, Question
 
 
+def owner(request: HttpRequest):
+    return HttpResponse("Hello, world. 8fe69eac is the polls index.")
+
+
+# ! UNUSED
 def index(request: HttpRequest):
     latest_question_list = Question.objects.order_by("-pub_date")[:5]
     context = {"latest_question_list": latest_question_list}
@@ -16,6 +22,7 @@ def index(request: HttpRequest):
     return HttpResponse(response)
 
 
+# ! UNUSED
 def detail(request: HttpRequest, question_id: str):
     question = get_object_or_404(Question, pk=question_id)
 
@@ -28,6 +35,17 @@ def detail(request: HttpRequest, question_id: str):
     # !and returns 404 if list is empty
 
     return render(request, "polls/detail.html", {"question": question})
+
+
+# ! UNUSED
+def results(request: HttpRequest, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+
+    return render(
+        request=request,
+        template_name="polls/results.html",
+        context={"question": question},
+    )
 
 
 def vote(request: HttpRequest, question_id: str):
@@ -55,15 +73,25 @@ def vote(request: HttpRequest, question_id: str):
     return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
 
 
-def results(request: HttpRequest, question_id):
-    question = get_object_or_404(Question, pk=question_id)
+class IndexView(generic.ListView):
+    template_name = "polls/index.html"
+    # ? default template name is <app name>/<model name>_list.html
+    context_object_name = "latest_question_list"
+    # ? default context name would've been "question_list"
 
-    return render(
-        request=request,
-        template_name="polls/results.html",
-        context={"question": question},
-    )
+    def get_queryset(self):
+        """Return the last five published questions"""
+
+        return Question.objects.order_by("-pub_date")[:5]
 
 
-def owner(request: HttpRequest):
-    return HttpResponse("Hello, world. 8fe69eac is the polls index.")
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = "polls/detail.html"
+    # ? default template name is "<appname>/<modelname>_detail.html"
+    # ? for context, variable "question" is already provided in context
+
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = "polls/results.html"
