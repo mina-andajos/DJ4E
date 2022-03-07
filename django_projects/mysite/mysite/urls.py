@@ -27,6 +27,7 @@ SITE_ROOT = os.path.join(BASE_DIR, "site")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("hello/", include("hello.urls")),
     path("", include("home.urls")),
     path("polls/", include("polls.urls")),
     # ? makes django take care of all polls urls depending on their config in polls.urls
