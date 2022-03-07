@@ -1,0 +1,9 @@
+<ul>
+  {% for app in app_index_urls %}
+  <li>
+    <p>
+      <a href="{{app}}">A {{app|title}} Application</a>
+    </p>
+  </li>
+  {% endfor %}
+</ul>
