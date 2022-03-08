@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Modelling</title>
+  </head>
+
+  <body>
+    <h1>Data Modelling</h1>
+
+    <div>
+      <h2>Important Notes</h2>
+      <ul>
+        <li><strong>NO DATA REPLICATION</strong></li>
+        <li>Split the replicated rows in to multiple tables</li>
+        <li>Make INT Ids for every table that you can reference</li>
+        <li>
+          When you find many different rows that correlate with the same row,
+          then it's probably a one-to-many relation
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <label for="bookAfterModel">After data model</label>
+      <img
+        id="bookAfterModel"
+        src="Book Models.png"
+        alt="book models"
+        width="500"
+      />
+    </div>
+
+    <div>
+      <h2>How to represent a one-to-many-relationship</h2>
+
+      <ol>
+        <li>Make an primary key column (mostly called "id") for each table</li>
+        <li>
+          To reference a table (the one) in another table (the many) we use a
+          foreign key column that contains the table_ids of the other table
+        </li>
+      </ol>
+    </div>
+  </body>
+</html>
