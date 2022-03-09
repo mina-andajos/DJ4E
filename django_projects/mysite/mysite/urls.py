@@ -38,4 +38,6 @@ urlpatterns = [
         {"document_root": SITE_ROOT, "show_indexes": True},
         name="site_path",
     ),
+    #? for user authentication
+    path("accounts/", include("django.contrib.auth.urls")),
 ]
