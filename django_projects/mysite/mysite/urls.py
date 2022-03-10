@@ -27,9 +27,12 @@ SITE_ROOT = os.path.join(BASE_DIR, "site")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("hello/", include("hello.urls")),
+    # ? for user authentication
+    path("accounts/", include("django.contrib.auth.urls")),
     path("", include("home.urls")),
+    path("hello/", include("hello.urls")),
     path("polls/", include("polls.urls")),
+
     # ? makes django take care of all polls urls depending on their config in polls.urls
     # ? You should always use include() when you include other URL patterns. admin.site.urls is the only exception to this.
     url(
@@ -38,6 +41,4 @@ urlpatterns = [
         {"document_root": SITE_ROOT, "show_indexes": True},
         name="site_path",
     ),
-    #? for user authentication
-    path("accounts/", include("django.contrib.auth.urls")),
 ]
