@@ -32,7 +32,7 @@ urlpatterns = [
     path("", include("home.urls")),
     path("hello/", include("hello.urls")),
     path("polls/", include("polls.urls")),
-
+    path("autos/", include("autos.urls")),
     # ? makes django take care of all polls urls depending on their config in polls.urls
     # ? You should always use include() when you include other URL patterns. admin.site.urls is the only exception to this.
     url(

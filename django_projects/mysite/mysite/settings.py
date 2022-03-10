@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "polls.apps.PollsConfig",
     "hello.apps.HelloConfig",
     "home.apps.HomeConfig",
+    "autos.apps.AutosConfig",
     # ? third-party
     "django_extensions",
     # ? built in
