@@ -27,27 +27,29 @@ SITE_ROOT = os.path.join(BASE_DIR, "site")
 
 # ? You should always use include() when you include other URL patterns. admin.site.urls is the only exception to this.
 urlpatterns = [
-    #? admin dashboard
+    # ? admin dashboard
     path("admin/", admin.site.urls),
     # ? for user authentication
     path("accounts/", include("django.contrib.auth.urls")),
-    #? home
+    # ? home
     path("", include("home.urls")),
-    #?installed apps
+    # ?installed apps
     path("hello/", include("hello.urls")),
     path("polls/", include("polls.urls")),
     path("autos/", include("autos.urls")),
     path("cats/", include("cats.urls")),
     path("ads/", include("ads.urls")),
-    # #? for static sites
-    # url(
-    #     r"^site/(?P<path>.*)$",
-    #     serve,
-    #     {"document_root": SITE_ROOT, "show_indexes": True},
-    #     name="site_path",
-    # ),
-    # #? for favicons
-    # path("favicon.ico",serve,{
-    #     "path":"favicon.ico",
-    # })
+    # ? for static sites
+    url(
+        r"^site/(?P<path>.*)$",
+        serve,
+        {"document_root": SITE_ROOT, "show_indexes": True},
+        name="site_path",
+    ),
+    # ? for favicons
+    path(
+        "favicon.ico",
+        serve,
+        {"path": "favicon.ico", "document_root": os.path.join(BASE_DIR, "home/static")},
+    ),
 ]
