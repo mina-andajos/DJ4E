@@ -1,20 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Site</title>
-  </head>
-  <body>
+{% extends 'base_bootstrap.html' %} {% block content %}
+<body>
+  <div>
+    <h1>My Site</h1>
+  </div>
+
+  <div>
+    <h2>My Apps</h2>
+
     <ul>
       {% for app in app_index_urls %}
       <li>
         <p>
-          <a href="{{app}}">A {{app|title}} Application</a>
+          <a href="{{app}}" target="_blank">A {{app|title}} Application</a>
         </p>
       </li>
       {% endfor %}
     </ul>
-  </body>
-</html>
+  </div>
+
+  <div>
+    {% if user.is_authenticated %}
+
+    <div>
+      Authenticated as:
+      <pre>
+        Name: {{ user.name }}
+        Email: {{ user.email }}
+        Id: {{ user.id }}
+        Type: {% if backends.associated %} Github {% else %} Local {% endif %}
+      </pre>
+    </div>
+    <p>You can <a href="/accounts/logout">Logout</a></p>
+
+    {% else %}
+    <p>You can <a href="/accounts/login">Login</a></p>
+
+    {% endif %}
+  </div>
+
+  <div>
+    {% if islocal %}
+    <strong
+      >Some of the samples will require a user login to be created.</strong
+    >
+    You can play with this code at:
+    <a href="https://samples.dj4e.com" target="_blank"
+      >https://samples.dj4e.com</a
+    >. {% else %} You might need an account and password to log in for certain
+    features. You might try this:
+
+    <pre>
+      Username: dj4e-samples
+      Password: dj4e_nn_!
+    </pre>
+
+    There is a part of this password that you need to guess. But if you have
+    done your homework, it should only take you one guess (instead of 100
+    guesses). {% endif %}
+  </div>
+
+  <div>
+    You can access the implementation of some of the later projects at
+    <a href="https://projects.dj4e.com/" target="_blank"
+      >https:/projects.dj4e.com/</a
+    >.
+  </div>
+
+  <div>
+    This sample code is available at
+    <a href="https://github.com/csev/dj4e-samples" target="_blank">
+      https://github.com/csev/dj4e-samples</a
+    >
+  </div>
+</body>
+{% endblock content %}
