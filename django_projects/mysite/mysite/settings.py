@@ -43,10 +43,10 @@ INSTALLED_APPS = [
     "ads.apps.AdsConfig",
     # ? third-party
     "django_extensions",
-    # "crispy_forms",
-    # "rest_framework",
+    "crispy_forms",
+    "rest_framework",
     "social_django",
-    # "taggit",
+    "taggit",
     # ? built in
     "django.contrib.admin",
     "django.contrib.auth",
@@ -57,11 +57,11 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
 ]
 
-# #? to get crispy forms
-# CRISPY_TEMPLATE_PACK="bootstrap3"
+# ? to get crispy forms
+CRISPY_TEMPLATE_PACK = "bootstrap3"
 
-# #? for tagging
-# TAGGIT_CASE_INSENSITIVE=True
+# ? for tagging
+TAGGIT_CASE_INSENSITIVE = True
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -88,7 +88,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 # ? added processors
-                # "home.context_processors.settings",
+                "home.context_processors.settings",
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
             ],
@@ -148,10 +148,72 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+# ? adding REST framework to settings
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    )
+}
+
+# ? configuring social logins
+try:
+    from . import github_settings
+
+    SOCIAL_AUTH_GITHUB_KEY = github_settings.SOCIAL_AUTH_GITHUB_KEY
+    SOCIAL_AUTH_GITHUB_SECRET = github_settings.SOCIAL_AUTH_GITHUB_SECRET
+except Exception as e:
+    print(
+        f"When you want to use social login, please see dj4e-samples/github_settings-dist.py\n{e}"
+    )
+
+# https://python-social-auth.readthedocs.io/en/latest/configuration/django.html#authentication-backends
+# https://simpleisbetterthancomplex.com/tutorial/2016/10/24/how-to-add-social-login-to-django.html
+
+AUTHENTICATION_BACKENDS = (
+    "social_core.backends.github.GithubOAuth2",
+    # 'social_core.backends.twitter.TwitterOAuth',
+    # 'social_core.backends.facebook.FacebookOAuth2',
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/"
+
+#! Don't set default LOGIN_URL - let django.contrib.auth set it when it is loaded
+#! LOGIN_URL = '/accounts/login'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+# https://coderwall.com/p/uzhyca/quickly-setup-sql-query-logging-django
+# https://stackoverflow.com/questions/12027545/determine-if-django-is-running-under-the-development-server
+
+"""  # Leave off for now
+import sys
+if (len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
+    print('Running locally')
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            }
+        },
+        'loggers': {
+            'django.db.backends': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+            },
+        }
+    }
+"""
+
 
 """
 superuser:
