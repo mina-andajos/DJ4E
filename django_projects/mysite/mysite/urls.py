@@ -25,21 +25,29 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ROOT = os.path.join(BASE_DIR, "site")
 
 
+# ? You should always use include() when you include other URL patterns. admin.site.urls is the only exception to this.
 urlpatterns = [
+    #? admin dashboard
     path("admin/", admin.site.urls),
     # ? for user authentication
     path("accounts/", include("django.contrib.auth.urls")),
+    #? home
     path("", include("home.urls")),
+    #?installed apps
     path("hello/", include("hello.urls")),
     path("polls/", include("polls.urls")),
     path("autos/", include("autos.urls")),
     path("cats/", include("cats.urls")),
-    # ? makes django take care of all polls urls depending on their config in polls.urls
-    # ? You should always use include() when you include other URL patterns. admin.site.urls is the only exception to this.
-    url(
-        r"^site/(?P<path>.*)$",
-        serve,
-        {"document_root": SITE_ROOT, "show_indexes": True},
-        name="site_path",
-    ),
+    path("ads/", include("ads.urls")),
+    # #? for static sites
+    # url(
+    #     r"^site/(?P<path>.*)$",
+    #     serve,
+    #     {"document_root": SITE_ROOT, "show_indexes": True},
+    #     name="site_path",
+    # ),
+    # #? for favicons
+    # path("favicon.ico",serve,{
+    #     "path":"favicon.ico",
+    # })
 ]

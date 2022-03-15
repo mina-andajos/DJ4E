@@ -10,11 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# ? User for a default title
+APP_NAME = "My Site"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -38,8 +40,13 @@ INSTALLED_APPS = [
     "home.apps.HomeConfig",
     "autos.apps.AutosConfig",
     "cats.apps.CatsConfig",
+    "ads.apps.AdsConfig",
     # ? third-party
     "django_extensions",
+    # "crispy_forms",
+    # "rest_framework",
+    # "social_django",
+    # "taggit",
     # ? built in
     "django.contrib.admin",
     "django.contrib.auth",
@@ -47,7 +54,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
 ]
+
+# #? to get crispy forms
+# CRISPY_TEMPLATE_PACK="bootstrap3"
+
+# #? for tagging
+# TAGGIT_CASE_INSENSITIVE=True
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -57,6 +71,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
 ROOT_URLCONF = "mysite.urls"
@@ -72,6 +87,10 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # ? added processors
+                # "home.context_processors.settings",
+                # "social_django.context_processors.backends",
+                # "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -86,7 +105,7 @@ WSGI_APPLICATION = "mysite.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
