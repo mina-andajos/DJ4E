@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     "django_extensions",
     # "crispy_forms",
     # "rest_framework",
-    # "social_django",
+    "social_django",
     # "taggit",
     # ? built in
     "django.contrib.admin",
@@ -89,8 +89,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 # ? added processors
                 # "home.context_processors.settings",
-                # "social_django.context_processors.backends",
-                # "social_django.context_processors.login_redirect",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
