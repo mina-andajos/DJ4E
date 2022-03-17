@@ -3,7 +3,9 @@ from django.db import models
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
+
     # ? mentioning the junction table (using the "through" param)
+
     authors = models.ManyToManyField(to="Author", through="Authored")
 
 
