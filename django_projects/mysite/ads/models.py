@@ -6,6 +6,9 @@ from django.conf import settings
 
 
 class Ad(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     title = models.CharField(
         max_length=200,
         validators=[
@@ -27,8 +30,11 @@ class Ad(models.Model):
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
+    picture = models.BinaryField(null=True, editable=True)
+    content_type = models.CharField(
+        max_length=256, null=True, help_text="the MIME_TYPE of the file"
+    )
 
     def __str__(self) -> str:
         return self.title

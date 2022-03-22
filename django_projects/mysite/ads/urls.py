@@ -1,4 +1,5 @@
 from django.urls import path, reverse_lazy
+from django.views.generic import TemplateView
 from . import views
 
 
@@ -21,4 +22,5 @@ urlpatterns = [
         views.AdDeleteView.as_view(success_url=reverse_lazy("ads:all")),
         name="ad_delete",
     ),
+    path("pic_picture/<int:pk>", views.stream_file, name="pic_picture"),
 ]
