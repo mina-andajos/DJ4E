@@ -34,6 +34,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # ? for user authentication
     path("accounts/", include("django.contrib.auth.urls")),
+    # ? for social logins
+    url(r"^oauth/", include("social_django.urls", namespace="social")),
     # ? home
     path("", include("home.urls")),
     # ?installed apps
