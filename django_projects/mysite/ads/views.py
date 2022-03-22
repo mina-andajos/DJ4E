@@ -1,15 +1,16 @@
-from ads.models import Ad
+from ads.models import Ad, Comment
 from ads.owner import (
     OwnerListView,
     OwnerDetailView,
     OwnerDeleteView,
 )
-from ads.forms import CreateForm
+from ads.forms import CommentForm, CreateForm
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+
 
 # Create your views here.
 class AdListView(OwnerListView):
@@ -20,6 +21,24 @@ class AdListView(OwnerListView):
 
 class AdDetailView(OwnerDetailView):
     model = Ad
+    template_name = "ads/ad_detail.html"
+
+    def get(self, request: HttpRequest, pk: int) -> HttpResponse:
+        ad = get_object_or_404(klass=self.model, id=pk)
+        comments = Comment.objects.filter(ad=ad).order_by("-updated_at")
+
+        comment_form = CommentForm()
+        context = {
+            "ad": ad,
+            "comments": comments,
+            "comment_form": comment_form,
+        }
+
+        return render(
+            request=request,
+            template_name=self.template_name,
+            context=context,
+        )
 
 
 class AdCreateView(LoginRequiredMixin, View):
@@ -94,10 +113,29 @@ class AdDeleteView(OwnerDeleteView):
     model = Ad
 
 
-def stream_file(request: HttpRequest, pk) -> HttpResponse:
+def stream_file(request: HttpRequest, pk: int) -> HttpResponse:
     ad = get_object_or_404(Ad, id=pk)
     response = HttpResponse()
     response["Content-Type"] = ad.content_type
     response["Content-Length"] = len(ad.picture)
     response.write(ad.picture)
     return response
+
+
+class CommentCreateView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest, pk: int):
+        ad = get_object_or_404(klass=Ad, id=pk)
+
+        comment = Comment(text=request.POST["comment"], owner=request.user, ad=ad)
+        comment.save()
+
+        return redirect(to=reverse_lazy("ads:ad_detail", args=[pk]))
+
+
+class CommentDeleteView(OwnerDeleteView):
+    model = Comment
+    template_name = "ads/comment_delete.html"
+
+    def get_success_url(self) -> str:
+        ad = self.object.ad
+        return reverse_lazy("ads:ad_detail", args=[ad.id])

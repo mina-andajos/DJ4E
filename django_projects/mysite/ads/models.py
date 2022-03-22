@@ -1,3 +1,4 @@
+from tkinter import CASCADE
 from django.db import models
 from django.core.validators import MinLengthValidator
 from django.conf import settings
@@ -36,5 +37,37 @@ class Ad(models.Model):
         max_length=256, null=True, help_text="the MIME_TYPE of the file"
     )
 
+    comments = models.ManyToManyField(
+        to=settings.AUTH_USER_MODEL,
+        through="Comment",
+        related_name="comments_owner",
+    )
+
     def __str__(self) -> str:
         return self.title
+
+
+class Comment(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    text = models.TextField(
+        validators=[
+            MinLengthValidator(
+                limit_value=3,
+                message="Comment must be greater than 3 characters",
+            )
+        ]
+    )
+
+    ad = models.ForeignKey(to=Ad, on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self) -> str:
+        if len(self.text) < 15:
+            return self.text
+        else:
+            return f"{self.text[:11]} ..."
