@@ -4,7 +4,7 @@
 <h1>Ads</h1>
 
 <div style="float: right">
-  <form action="">
+  <form>
     <input type="text" name="search" placeholder="Search..."
     {% if search %} value="{{ search }}" {% endif %}
     >
@@ -24,7 +24,25 @@
         {% if ad.owner == user %}
         (<a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
         <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>)
+        <br>
         {% endif %}
+
+        <div style="left: 10px">
+          {% if ad.text|length < 100 %}
+            {{ ad.text }}
+          {% else %}
+            {{ ad.text|slice:"0:99" }}
+            <a href="{% url 'ads:ad_detail' ad.id %}">...</a>
+          {% endif %}
+        </div>
+
+        <small>
+          {% if ad.owner.username %}
+            posted by {{ ad.owner.username }}
+          {% endif %}
+
+          {{ ad.natural_updated }}
+        </small>
 
         {% if user.is_authenticated %}
         <!-- Two hrefs with two stacked icons each - one showing and one hidden -->
@@ -34,24 +52,23 @@
             id="favorite_star_{{ad.id}}">
 
         <span class="fa-stack" style="vertical-align: middle;">
-        <i class="fa fa-star fa-stack-1x" style="color: orange;"></i>
-        <i class="fa fa-star-o fa-stack-1x"></i>
+          <i class="fa fa-star fa-stack-1x" style="color: orange;"></i>
+          <i class="fa fa-star-o fa-stack-1x"></i>
         </span>
         </a>
 
 
         <!-- the second href -->
         <a href="#" onclick=
-             "favPost('{% url 'ads:ad_favorite' ad.id %}', {{ ad.id }} );return false;"
+              "favPost('{% url 'ads:ad_favorite' ad.id %}', {{ ad.id }} );return false;"
             {% if ad.id in favorites %} style="display: none;" {% endif %}
             id="unfavorite_star_{{ad.id}}">
 
-        <span class="fa-stack" style="vertical-align: middle;">
+          <span class="fa-stack" style="vertical-align: middle;">
 
-        <i class="fa fa-star fa-stack-1x" style="display: none; color: orange;"></i>
-        <i class="fa fa-star-o fa-stack-1x"></i>
-
-        </span>
+            <i class="fa fa-star fa-stack-1x" style="display: none; color: orange;"></i>
+            <i class="fa fa-star-o fa-stack-1x"></i>
+          </span>
         </a>
         {% endif %}
     </li>
@@ -62,7 +79,6 @@
 {% else %}
   <p>There are no ads in the database.</p>
 {% endif %}
-
 </p>
 
 <p>

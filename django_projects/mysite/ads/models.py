@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinLengthValidator
 from django.conf import settings
 
+from taggit.managers import TaggableManager
+
 # Create your models here.
 
 
@@ -47,6 +49,8 @@ class Ad(models.Model):
         through="Favorite",
         related_name="favorite_ads",
     )
+
+    tags=TaggableManager(blank=True)
 
     def __str__(self) -> str:
         return self.title

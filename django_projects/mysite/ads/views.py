@@ -29,7 +29,12 @@ class AdListView(OwnerListView):
             ads = Ad.objects.all().order_by("-updated_at")[:10]
         else:
             query = generate_search_query(search_value=search_value)
-            ads = Ad.objects.filter(query).select_related().order_by("-updated_at")[:10]
+            ads = (
+                Ad.objects.filter(query)
+                .select_related()
+                .distinct()
+                .order_by("-updated_at")[:10]
+            )
 
         for ad in ads:
             ad.natural_updated = naturaltime(value=ad.updated_at)
@@ -104,6 +109,7 @@ class AdCreateView(LoginRequiredMixin, View):
             ad = form.save(commit=False)
             ad.owner = self.request.user
             ad.save()
+            form.save_m2m()
 
             return redirect(to=self.success_url)
 
@@ -135,7 +141,8 @@ class AdUpdateView(LoginRequiredMixin, View):
                 context=context,
             )
 
-        ad = form.save()
+        ad = form.save(commit=False)
+        form.save_m2m()
 
         return redirect(to=self.success_url)
 

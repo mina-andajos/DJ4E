@@ -22,6 +22,7 @@ class CreateForm(forms.ModelForm):
             "text",
             "picture",
             "price",
+            "tags"
         ]
 
     def clean(self):
@@ -56,6 +57,7 @@ class CreateForm(forms.ModelForm):
 
         if commit:
             instance.save()
+            self.save_m2m()
 
         return instance
 
