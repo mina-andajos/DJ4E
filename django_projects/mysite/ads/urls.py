@@ -6,7 +6,11 @@ from . import views
 app_name = "ads"
 urlpatterns = [
     path("", views.AdListView.as_view(), name="all"),
-    path("ad/<int:pk>", views.AdDetailView.as_view(), name="ad_detail"),
+    path(
+        "ad/<int:pk>",
+        views.AdDetailView.as_view(),
+        name="ad_detail",
+    ),
     path(
         "ad/create",
         views.AdCreateView.as_view(success_url=reverse_lazy("ads:all")),
@@ -33,9 +37,7 @@ urlpatterns = [
         views.CommentDeleteView.as_view(success_url=reverse_lazy("ads:all")),
         name="ad_comment_delete",
     ),
-    path(
-        "ad/<int:pk>/favorite", views.AddFavoriteView.as_view(), name="ad_favorite"
-    ),
+    path("ad/<int:pk>/favorite", views.AddFavoriteView.as_view(), name="ad_favorite"),
     path(
         "ad/<int:pk>/unfavorite",
         views.DeleteFavoriteView.as_view(),

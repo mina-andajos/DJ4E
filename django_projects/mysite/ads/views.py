@@ -1,12 +1,6 @@
-from ads.models import Ad, Comment, Favorite
-from ads.owner import (
-    OwnerListView,
-    OwnerDetailView,
-    OwnerDeleteView,
-)
-from ads.forms import CommentForm, CreateForm
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.urls import reverse_lazy
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,6 +8,14 @@ from django.db.utils import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+from ads.models import Ad, Comment, Favorite
+from ads.owner import (
+    OwnerListView,
+    OwnerDetailView,
+    OwnerDeleteView,
+)
+from ads.forms import CommentForm, CreateForm
+from ads.utils import generate_search_query
 
 # Create your views here.
 class AdListView(OwnerListView):
@@ -21,9 +23,18 @@ class AdListView(OwnerListView):
     template_name = "ads/ad_list.html"
 
     def get(self, request: HttpRequest) -> HttpResponse:
-        ads = Ad.objects.all()
-        favorites = []
+        search_value = request.GET.get("search", False)
 
+        if not search_value:
+            ads = Ad.objects.all().order_by("-updated_at")[:10]
+        else:
+            query = generate_search_query(search_value=search_value)
+            ads = Ad.objects.filter(query).select_related().order_by("-updated_at")[:10]
+
+        for ad in ads:
+            ad.natural_updated = naturaltime(value=ad.updated_at)
+
+        favorites = []
         if request.user.is_authenticated:
             # ? rows=[{"id":2},...]
             rows = request.user.favorite_ads.values("id")
@@ -31,8 +42,6 @@ class AdListView(OwnerListView):
             favorites = [row["id"] for row in rows]
 
         context = {"ads": ads, "favorites": favorites}
-
-        print(context)  #! DEBUG
 
         return render(
             request=request,
