@@ -1,4 +1,3 @@
-from tkinter import CASCADE
 from django.db import models
 from django.core.validators import MinLengthValidator
 from django.conf import settings
@@ -43,6 +42,12 @@ class Ad(models.Model):
         related_name="comments_owner",
     )
 
+    favorites = models.ManyToManyField(
+        to=settings.AUTH_USER_MODEL,
+        through="Favorite",
+        related_name="favorite_ads",
+    )
+
     def __str__(self) -> str:
         return self.title
 
@@ -71,3 +76,18 @@ class Comment(models.Model):
             return self.text
         else:
             return f"{self.text[:11]} ..."
+
+
+class Favorite(models.Model):
+    ad = models.ForeignKey(to=Ad, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="favorites_users",
+    )
+
+    class Meta:
+        unique_together = ["ad", "user"]  # ? only one combination
+
+    def __str__(self) -> str:
+        return f"{self.user.username} likes {self.ad.title[:10]}"

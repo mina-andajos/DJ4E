@@ -1,4 +1,4 @@
-from ads.models import Ad, Comment
+from ads.models import Ad, Comment, Favorite
 from ads.owner import (
     OwnerListView,
     OwnerDetailView,
@@ -10,13 +10,35 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.utils import IntegrityError
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
 # Create your views here.
 class AdListView(OwnerListView):
     model = Ad
-    # By convention:
-    # template_name = "myarts/Ad_list.html"
+    template_name = "ads/ad_list.html"
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        ads = Ad.objects.all()
+        favorites = []
+
+        if request.user.is_authenticated:
+            # ? rows=[{"id":2},...]
+            rows = request.user.favorite_ads.values("id")
+            # ?favorites=[2,...]
+            favorites = [row["id"] for row in rows]
+
+        context = {"ads": ads, "favorites": favorites}
+
+        print(context)  #! DEBUG
+
+        return render(
+            request=request,
+            template_name=self.template_name,
+            context=context,
+        )
 
 
 class AdDetailView(OwnerDetailView):
@@ -139,3 +161,34 @@ class CommentDeleteView(OwnerDeleteView):
     def get_success_url(self) -> str:
         ad = self.object.ad
         return reverse_lazy("ads:ad_detail", args=[ad.id])
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AddFavoriteView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest, pk: int) -> HttpResponse:
+        print(f"Add PK {pk}")
+
+        ad = get_object_or_404(klass=Ad, id=pk)
+        favorite = Favorite(user=request.user, ad=ad)
+
+        try:
+            favorite.save()
+        except IntegrityError as e:
+            pass
+
+        return HttpResponse()
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class DeleteFavoriteView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest, pk: int) -> HttpResponse:
+        print(f"Delete PK {pk}")
+
+        ad = get_object_or_404(klass=Ad, id=pk)
+
+        try:
+            favorite = Favorite.objects.get(user=request.user, ad=ad).delete()
+        except Favorite.DoesNotExist as e:
+            pass
+
+        return HttpResponse()
