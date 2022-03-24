@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "autos.apps.AutosConfig",
     "cats.apps.CatsConfig",
     "ads.apps.AdsConfig",
+    "homework.apps.HomeworkConfig",
     # ? third-party
     "django_extensions",
     "crispy_forms",

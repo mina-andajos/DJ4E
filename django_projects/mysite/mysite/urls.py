@@ -44,6 +44,7 @@ urlpatterns = [
     path("autos/", include("autos.urls")),
     path("cats/", include("cats.urls")),
     path("ads/", include("ads.urls")),
+    path("homework/", include("homework.urls")),
     # ? for static sites
     url(
         r"^site/(?P<path>.*)$",
